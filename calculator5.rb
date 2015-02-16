@@ -9,19 +9,20 @@ end
 
 #Validation function.  Should check that two things are true, if not print error message
 
-def triangle_validation (sides, a, b, c) #unsure about stuff in parens here, if need etc
+def triangle_validation (sides) #unsure about stuff in parens here, if need etc
   #if is_triangle(a, b, c) then True elseif print "This is not a valid triangle" end
   #if has_3_sides(sides) then True elseif print "You must enter THREE sides" end
 
-  if has_3_sides(sides) and is_triangle(a, b, c)
-    return true
-  elsif not has_3_sides(sides)
+  if not has_3_sides(sides)
     print "You must enter THREE sides\n"
     return false
-  elsif not is_triangle(a, b, c)
+  end
+  if not is_triangle(sides[0], sides[1], sides[2])
     print "This is not a valid triangle\n"
     return false
   end
+  return true
+
   #if not is_triangle(a, b, c) then return False and print "This is not a valid triangle" end
   #if not has_3_sides(sides) then return False and print "You must enter THREE sides"  end
   # return True if is_triangle(a, b, c) and has_3_sides(sides)
@@ -36,11 +37,11 @@ end
 begin
   print "Enter the THREE sides of your triangle leaving a space between each:"
   sides=STDIN.gets.chomp.split.map { |s| s.to_f }
-  side_a = sides[0]
-  side_b = sides[1]
-  side_c = sides[2]
+end until triangle_validation(sides)
 
-end until triangle_validation(sides, side_a, side_b, side_c) #return True
+side_a = sides[0]
+side_b = sides[1]
+side_c = sides[2]
 
 semiperimeter = (side_a + side_b + side_c)/2
 
