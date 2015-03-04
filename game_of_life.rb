@@ -1,13 +1,24 @@
 
 current_grid = [
-  [ 0, 0, 1, 1 ],
-  [ 0, 0, 0, 0 ],
-  [ 1, 1, 0, 0 ],
-  [ 1, 1, 0, 0 ],
-  [ 1, 1, 0, 0 ] ]
+  [ 0, 0, 0, 0, 0, 0 ],
+  [ 0, 0, 0, 0, 0, 0 ],
+  [ 0, 0, 1, 1, 1, 0 ],
+  [ 0, 1, 1, 1, 0, 0 ],
+  [ 0, 0, 0, 0, 0, 0 ],
+  [ 0, 0, 0, 0, 0, 0 ]  ]
 
 def count_live_neighbors x, y, grid
-  2
+  counter = 0
+  counter = counter + 1 if grid[y][x-1] == 1
+  counter = counter + 1 if grid[y][x+1] == 1
+  counter = counter + 1 if y > 0 && grid[y-1][x-1] == 1
+  counter = counter + 1 if y > 0 && grid[y-1][x] == 1
+  counter = counter + 1 if y > 0 && grid[y-1][x+1] == 1
+  counter = counter + 1 if (y + 1) < grid.size && grid[y+1][x-1] == 1
+  counter = counter + 1 if (y + 1) < grid.size && grid[y+1][x] == 1
+  counter = counter + 1 if (y + 1) < grid.size && grid[y+1][x+1] == 1
+
+  counter
 end
 
 def apply_rules(grid)
