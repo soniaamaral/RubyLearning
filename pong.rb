@@ -16,7 +16,7 @@ class PongWindow < Gosu::Window
     @ball_radius = 7
     @ball_color = Gosu::Color.rgb(255, 192, 128)
     @ball_position = Vector2d(@width / 2, @height / 2)
-    @ball_abs_velocity = 100 # px/s
+    @ball_abs_velocity = 500 # px/s
     @ball_velocity = Vector2d(rand(-100..100), rand(-100..100)).normalize * @ball_abs_velocity
   end
 
@@ -34,6 +34,10 @@ class PongWindow < Gosu::Window
       @ball_position += @ball_velocity * delta
     end
     @last_time = current_time
+
+    if @ball_position.y < 0 or @ball_position.y > @height
+      @ball_velocity = Vector2d(@ball_velocity.x, -@ball_velocity.y)
+    end
   end
 
   def draw_rect x, y, width, height, color
