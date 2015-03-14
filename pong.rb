@@ -35,7 +35,7 @@ class PongWindow < Gosu::Window
     end
     @last_time = current_time
 
-    if @ball_position.y < 0 or @ball_position.y > @height
+    if @ball_position.y - @ball_radius < 0 or @ball_position.y + @ball_radius > @height
       @ball_velocity = Vector2d(@ball_velocity.x, -@ball_velocity.y)
     end
   end
