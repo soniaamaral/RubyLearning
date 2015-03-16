@@ -30,14 +30,16 @@ class PongWindow < Gosu::Window
     draw_rect @ball_position.x - @ball_radius, @ball_position.y - @ball_radius, @ball_radius * 2, @ball_radius * 2, @ball_color
   end
 
-  def update
-    current_left_paddle_velocity = 0
-    current_left_paddle_velocity -= @paddle_velocity if button_down? Gosu::KbW
-    current_left_paddle_velocity += @paddle_velocity if button_down? Gosu::KbS
+  def compute_paddle_velocity kbInc, kbDec
+    velocity = 0
+    velocity -= @paddle_velocity if button_down? kbDec
+    velocity += @paddle_velocity if button_down? kbInc
+    velocity
+  end
 
-    current_right_paddle_velocity = 0
-    current_right_paddle_velocity -= @paddle_velocity if button_down? Gosu::KbUp
-    current_right_paddle_velocity += @paddle_velocity if button_down? Gosu::KbDown
+  def update
+    current_left_paddle_velocity = compute_paddle_velocity(Gosu::KbS, Gosu::KbW)
+    current_right_paddle_velocity = compute_paddle_velocity(Gosu::KbDown, Gosu::KbUp)
 
     current_time = Gosu::milliseconds
     if not @last_time.nil?
