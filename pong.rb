@@ -18,20 +18,33 @@ class PongWindow < Gosu::Window
     @ball_position = Vector2d(@width / 2, @height / 2)
     @ball_abs_velocity = 500 # px/s
     @ball_velocity = Vector2d(rand(-100..100), rand(-100..100)).normalize * @ball_abs_velocity
+    @paddle_velocity = 100 # px/s
+    @left_paddle_position = 100
+    @right_paddle_position = 100
   end
 
   def draw
     draw_rect 0, 0, @width, @height, @background_color
-    draw_rect @paddle_margin, 100, @paddle_width, @paddle_height, @paddle_color
-    draw_rect @width - @paddle_margin - @paddle_width, 100, @paddle_width, @paddle_height, @paddle_color
+    draw_rect @paddle_margin, @left_paddle_position, @paddle_width, @paddle_height, @paddle_color
+    draw_rect @width - @paddle_margin - @paddle_width, @right_paddle_position, @paddle_width, @paddle_height, @paddle_color
     draw_rect @ball_position.x - @ball_radius, @ball_position.y - @ball_radius, @ball_radius * 2, @ball_radius * 2, @ball_color
   end
 
   def update
+    current_left_paddle_velocity = 0
+    current_left_paddle_velocity -= @paddle_velocity if button_down? Gosu::KbW
+    current_left_paddle_velocity += @paddle_velocity if button_down? Gosu::KbS
+
+    current_right_paddle_velocity = 0
+    current_right_paddle_velocity -= @paddle_velocity if button_down? Gosu::KbUp
+    current_right_paddle_velocity += @paddle_velocity if button_down? Gosu::KbDown
+
     current_time = Gosu::milliseconds
     if not @last_time.nil?
       delta = (current_time - @last_time) / 1000.0
       @ball_position += @ball_velocity * delta
+      @left_paddle_position += current_left_paddle_velocity * delta
+      @right_paddle_position += current_right_paddle_velocity * delta
     end
     @last_time = current_time
 
