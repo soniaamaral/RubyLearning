@@ -45,8 +45,8 @@ class PongWindow < Gosu::Window
     if not @last_time.nil?
       delta = (current_time - @last_time) / 1000.0
       @ball_position += @ball_velocity * delta
-      @left_paddle_position += current_left_paddle_velocity * delta
-      @right_paddle_position += current_right_paddle_velocity * delta
+      @left_paddle_position = [[@left_paddle_position + current_left_paddle_velocity * delta, 0].max, @height - @paddle_height].min
+      @right_paddle_position = [[@right_paddle_position + current_right_paddle_velocity * delta, 0].max, @height - @paddle_height].min
     end
     @last_time = current_time
 
