@@ -11,14 +11,14 @@ class PongWindow < Gosu::Window
     @background_color = Gosu::Color.rgb(0, 0, 64)
     @paddle_color = Gosu::Color.rgb(128, 192, 255)
     @paddle_width = 16
-    @paddle_height = 64
+    @paddle_height = 92
     @paddle_margin = 10
     @ball_radius = 7
     @ball_color = Gosu::Color.rgb(255, 192, 128)
     @ball_position = Vector2d(@width / 2, @height / 2)
-    @ball_abs_velocity = 500 # px/s
+    @ball_abs_velocity = 300 # px/s
     @ball_velocity = Vector2d(rand(-100..100), rand(-100..100)).normalize * @ball_abs_velocity
-    @paddle_velocity = 100 # px/s
+    @paddle_velocity = 400 # px/s
     @left_paddle_position = 100
     @right_paddle_position = 100
   end
