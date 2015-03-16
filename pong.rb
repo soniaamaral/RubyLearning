@@ -53,6 +53,10 @@ class PongWindow < Gosu::Window
     if @ball_position.y - @ball_radius < 0 or @ball_position.y + @ball_radius > @height
       @ball_velocity = Vector2d(@ball_velocity.x, -@ball_velocity.y)
     end
+    if (@ball_position.x - @ball_radius < @paddle_margin + @paddle_width and @ball_position.y + @ball_radius > @left_paddle_position and @ball_position.y - @ball_radius < @left_paddle_position + @paddle_height) or
+       (@ball_position.x + @ball_radius > @width - @paddle_margin - @paddle_width and @ball_position and @ball_position.y + @ball_radius > @right_paddle_position and @ball_position.y - @ball_radius < @right_paddle_position + @paddle_height)
+      @ball_velocity = Vector2d(-@ball_velocity.x, @ball_velocity.y)
+    end
   end
 
   def draw_rect x, y, width, height, color
