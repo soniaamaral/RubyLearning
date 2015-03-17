@@ -41,14 +41,10 @@ class PongWindow < Gosu::Window
     current_left_paddle_velocity = compute_paddle_velocity(Gosu::KbS, Gosu::KbW)
     current_right_paddle_velocity = compute_paddle_velocity(Gosu::KbDown, Gosu::KbUp)
 
-    current_time = Gosu::milliseconds
-    if not @last_time.nil?
-      delta = (current_time - @last_time) / 1000.0
-      @ball_position += @ball_velocity * delta
-      @left_paddle_position = [[@left_paddle_position + current_left_paddle_velocity * delta, 0].max, @height - @paddle_height].min
-      @right_paddle_position = [[@right_paddle_position + current_right_paddle_velocity * delta, 0].max, @height - @paddle_height].min
-    end
-    @last_time = current_time
+    delta = 1/60.0
+    @ball_position += @ball_velocity * delta
+    @left_paddle_position = [[@left_paddle_position + current_left_paddle_velocity * delta, 0].max, @height - @paddle_height].min
+    @right_paddle_position = [[@right_paddle_position + current_right_paddle_velocity * delta, 0].max, @height - @paddle_height].min
 
     if @ball_position.y - @ball_radius < 0 or @ball_position.y + @ball_radius > @height
       @ball_velocity = Vector2d(@ball_velocity.x, -@ball_velocity.y)
