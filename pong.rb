@@ -1,6 +1,15 @@
 require 'gosu'
 require 'vector2d'
 
+class Ball
+  attr_reader :radius
+  attr_accessor :position, :velocity
+
+  def initialize radius
+    @radius = radius
+  end
+end
+
 class PongWindow < Gosu::Window
   def initialize
     @width = 640
@@ -13,11 +22,11 @@ class PongWindow < Gosu::Window
     @paddle_width = 16
     @paddle_height = 92
     @paddle_margin = 10
-    @ball_radius = 7
+    @ball = Ball.new(7)
     @ball_color = Gosu::Color.rgb(255, 192, 128)
-    @ball_position = Vector2d(@width / 2, @height / 2)
+    @ball.position = Vector2d(@width / 2, @height / 2)
     @ball_abs_velocity = 300 # px/s
-    @ball_velocity = Vector2d(rand(-100..100), rand(-100..100)).normalize * @ball_abs_velocity
+    @ball.velocity = Vector2d(rand(-100..100), rand(-100..100)).normalize * @ball_abs_velocity
     @paddle_velocity = 400 # px/s
     @left_paddle_position = 100
     @right_paddle_position = 100
@@ -27,7 +36,7 @@ class PongWindow < Gosu::Window
     draw_rect 0, 0, @width, @height, @background_color
     draw_rect @paddle_margin, @left_paddle_position, @paddle_width, @paddle_height, @paddle_color
     draw_rect @width - @paddle_margin - @paddle_width, @right_paddle_position, @paddle_width, @paddle_height, @paddle_color
-    draw_rect @ball_position.x - @ball_radius, @ball_position.y - @ball_radius, @ball_radius * 2, @ball_radius * 2, @ball_color
+    draw_rect @ball.position.x - @ball.radius, @ball.position.y - @ball.radius, @ball.radius * 2, @ball.radius * 2, @ball_color
   end
 
   def compute_paddle_velocity kbInc, kbDec
@@ -37,24 +46,24 @@ class PongWindow < Gosu::Window
     velocity
   end
 
-  def bounce_ball_right_off_segment x, y_min, y_max, velocity, position, radius
-    if position.x - radius < x and
-       position.y + radius > y_min and
-       position.y - radius < y_max and
-       velocity.x < 0
-      return Vector2d(-velocity.x, velocity.y)
+  def bounce_ball_right_off_segment x, y_min, y_max, ball
+    if ball.position.x - ball.radius < x and
+       ball.position.y + ball.radius > y_min and
+       ball.position.y - ball.radius < y_max and
+       ball.velocity.x < 0
+      return Vector2d(-ball.velocity.x, ball.velocity.y)
     end
-    velocity
+    ball.velocity
   end
 
-  def bounce_ball_left_off_segment x, y_min, y_max, velocity, position, radius
-    if position.x + radius > x and
-       position.y + radius > y_min and
-       position.y - radius < y_max and
-       velocity.x > 0
-      return Vector2d(-velocity.x, velocity.y)
+  def bounce_ball_left_off_segment x, y_min, y_max, ball
+    if ball.position.x + ball.radius > x and
+       ball.position.y + ball.radius > y_min and
+       ball.position.y - ball.radius < y_max and
+       ball.velocity.x > 0
+      return Vector2d(-ball.velocity.x, ball.velocity.y)
     end
-    velocity
+    ball.velocity
   end
 
   def update
@@ -62,23 +71,23 @@ class PongWindow < Gosu::Window
     current_right_paddle_velocity = compute_paddle_velocity(Gosu::KbDown, Gosu::KbUp)
 
     delta = 1/60.0
-    @ball_position += @ball_velocity * delta
+    @ball.position += @ball.velocity * delta
     @left_paddle_position = [[@left_paddle_position + current_left_paddle_velocity * delta, 0].max, @height - @paddle_height].min
     @right_paddle_position = [[@right_paddle_position + current_right_paddle_velocity * delta, 0].max, @height - @paddle_height].min
 
-    if @ball_position.y - @ball_radius < 0 and @ball_velocity.y < 0
-      @ball_velocity = Vector2d(@ball_velocity.x, -@ball_velocity.y)
+    if @ball.position.y - @ball.radius < 0 and @ball.velocity.y < 0
+      @ball.velocity = Vector2d(@ball.velocity.x, -@ball.velocity.y)
     end
-    if @ball_position.y + @ball_radius > @height and @ball_velocity.y > 0
-      @ball_velocity = Vector2d(@ball_velocity.x, -@ball_velocity.y)
+    if @ball.position.y + @ball.radius > @height and @ball.velocity.y > 0
+      @ball.velocity = Vector2d(@ball.velocity.x, -@ball.velocity.y)
     end
 
-    @ball_velocity = bounce_ball_right_off_segment(@paddle_margin + @paddle_width, @left_paddle_position, @left_paddle_position + @paddle_height, @ball_velocity, @ball_position, @ball_radius)
-    @ball_velocity = bounce_ball_left_off_segment(@width - @paddle_margin - @paddle_width, @right_paddle_position, @right_paddle_position + @paddle_height, @ball_velocity, @ball_position, @ball_radius)
+    @ball.velocity = bounce_ball_right_off_segment(@paddle_margin + @paddle_width, @left_paddle_position, @left_paddle_position + @paddle_height, @ball)
+    @ball.velocity = bounce_ball_left_off_segment(@width - @paddle_margin - @paddle_width, @right_paddle_position, @right_paddle_position + @paddle_height, @ball)
 
-    if @ball_position.x + @ball_radius < 0 or @ball_position.x - @ball_radius > @width
-      @ball_position = Vector2d(@width / 2, @height / 2)
-      @ball_velocity = Vector2d(rand(-100..100), rand(-100..100)).normalize * @ball_abs_velocity
+    if @ball.position.x + @ball.radius < 0 or @ball.position.x - @ball.radius > @width
+      @ball.position = Vector2d(@width / 2, @height / 2)
+      @ball.velocity = Vector2d(rand(-100..100), rand(-100..100)).normalize * @ball_abs_velocity
     end
   end
 
