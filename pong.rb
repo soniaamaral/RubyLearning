@@ -65,9 +65,8 @@ class PongWindow < Gosu::Window
        ball.position.y + ball.radius > paddle.y_min and
        ball.position.y - ball.radius < paddle.y_max and
        ball.velocity.x < 0
-      return Vector2d(-ball.velocity.x, ball.velocity.y)
+      ball.velocity = Vector2d(-ball.velocity.x, ball.velocity.y)
     end
-    ball.velocity
   end
 
   def bounce_ball_left_off_segment paddle, ball
@@ -75,9 +74,8 @@ class PongWindow < Gosu::Window
        ball.position.y + ball.radius > paddle.y_min and
        ball.position.y - ball.radius < paddle.y_max and
        ball.velocity.x > 0
-      return Vector2d(-ball.velocity.x, ball.velocity.y)
+      ball.velocity = Vector2d(-ball.velocity.x, ball.velocity.y)
     end
-    ball.velocity
   end
 
   def update
@@ -96,8 +94,8 @@ class PongWindow < Gosu::Window
       @ball.velocity = Vector2d(@ball.velocity.x, -@ball.velocity.y)
     end
 
-    @ball.velocity = bounce_ball_right_off_segment(@left_paddle, @ball)
-    @ball.velocity = bounce_ball_left_off_segment(@right_paddle, @ball)
+    bounce_ball_right_off_segment(@left_paddle, @ball)
+    bounce_ball_left_off_segment(@right_paddle, @ball)
 
     if @ball.position.x + @ball.radius < 0 or @ball.position.x - @ball.radius > @width
       @ball.position = Vector2d(@width / 2, @height / 2)
