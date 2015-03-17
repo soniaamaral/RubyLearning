@@ -37,6 +37,26 @@ class PongWindow < Gosu::Window
     velocity
   end
 
+  def bounce_ball_right_off_segment x, y_min, y_max, velocity, position, radius
+    if position.x - radius < x and
+       position.y + radius > y_min and
+       position.y - radius < y_max and
+       velocity.x < 0
+      return Vector2d(-velocity.x, velocity.y)
+    end
+    velocity
+  end
+
+  def bounce_ball_left_off_segment x, y_min, y_max, velocity, position, radius
+    if position.x + radius > x and
+       position.y + radius > y_min and
+       position.y - radius < y_max and
+       velocity.x > 0
+      return Vector2d(-velocity.x, velocity.y)
+    end
+    velocity
+  end
+
   def update
     current_left_paddle_velocity = compute_paddle_velocity(Gosu::KbS, Gosu::KbW)
     current_right_paddle_velocity = compute_paddle_velocity(Gosu::KbDown, Gosu::KbUp)
@@ -52,10 +72,10 @@ class PongWindow < Gosu::Window
     if @ball_position.y + @ball_radius > @height and @ball_velocity.y > 0
       @ball_velocity = Vector2d(@ball_velocity.x, -@ball_velocity.y)
     end
-    if (@ball_position.x - @ball_radius < @paddle_margin + @paddle_width and @ball_position.y + @ball_radius > @left_paddle_position and @ball_position.y - @ball_radius < @left_paddle_position + @paddle_height) or
-       (@ball_position.x + @ball_radius > @width - @paddle_margin - @paddle_width and @ball_position and @ball_position.y + @ball_radius > @right_paddle_position and @ball_position.y - @ball_radius < @right_paddle_position + @paddle_height)
-      @ball_velocity = Vector2d(-@ball_velocity.x, @ball_velocity.y)
-    end
+
+    @ball_velocity = bounce_ball_right_off_segment(@paddle_margin + @paddle_width, @left_paddle_position, @left_paddle_position + @paddle_height, @ball_velocity, @ball_position, @ball_radius)
+    @ball_velocity = bounce_ball_left_off_segment(@width - @paddle_margin - @paddle_width, @right_paddle_position, @right_paddle_position + @paddle_height, @ball_velocity, @ball_position, @ball_radius)
+
     if @ball_position.x + @ball_radius < 0 or @ball_position.x - @ball_radius > @width
       @ball_position = Vector2d(@width / 2, @height / 2)
       @ball_velocity = Vector2d(rand(-100..100), rand(-100..100)).normalize * @ball_abs_velocity
