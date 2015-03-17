@@ -46,7 +46,10 @@ class PongWindow < Gosu::Window
     @left_paddle_position = [[@left_paddle_position + current_left_paddle_velocity * delta, 0].max, @height - @paddle_height].min
     @right_paddle_position = [[@right_paddle_position + current_right_paddle_velocity * delta, 0].max, @height - @paddle_height].min
 
-    if @ball_position.y - @ball_radius < 0 or @ball_position.y + @ball_radius > @height
+    if @ball_position.y - @ball_radius < 0 and @ball_velocity.y < 0
+      @ball_velocity = Vector2d(@ball_velocity.x, -@ball_velocity.y)
+    end
+    if @ball_position.y + @ball_radius > @height and @ball_velocity.y > 0
       @ball_velocity = Vector2d(@ball_velocity.x, -@ball_velocity.y)
     end
     if (@ball_position.x - @ball_radius < @paddle_margin + @paddle_width and @ball_position.y + @ball_radius > @left_paddle_position and @ball_position.y - @ball_radius < @left_paddle_position + @paddle_height) or
