@@ -4,11 +4,11 @@ word = STDIN.gets
 dictionary = Hash.new
 
 if dictionary[word] == nil
-  print "What is the definition of this word?"
+  print "What is the definition of this word?\n"
   definition = STDIN.gets
   dictionary[word] = definition
   #definition << dictionary
-  print dictionary
-elseif
-  print dictionary[word]
+  print dictionary, "\n"
+else
+  print "The definition of #{word} is: #{dictionary[word]}\n"
 end
